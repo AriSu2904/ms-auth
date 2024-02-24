@@ -1,0 +1,4 @@
+type Mutation {
+    loginUser(loginInput: loginInput): AuthPayload,
+    registerUser(registerInput: RegisterInput): User
+}

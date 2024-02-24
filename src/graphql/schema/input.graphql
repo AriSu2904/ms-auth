@@ -1,0 +1,17 @@
+input RegisterInput {
+    firstName: String!,
+    lastName: String!,
+    email: String!,
+    mobilePhone: String!,
+    gender: String!,
+    birthDate: String!,
+    userTag: String!,
+    username: String!,
+    password: String!
+}
+
+input loginInput {
+    email: String,
+    username: String,
+    password: String!
+}

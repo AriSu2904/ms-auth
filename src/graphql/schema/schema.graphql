@@ -1,0 +1,18 @@
+type User {
+    id: ID!,
+    firstName: String,
+    lastName: String,
+    email: String,
+    mobilePhone: String,
+    gender: String,
+    birthDate: String,
+    userTag: String,
+    username: String,
+    password: String
+}
+
+type AuthPayload {
+    username: String,
+    email: String,
+    token: String!
+}
