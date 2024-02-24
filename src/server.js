@@ -8,6 +8,10 @@ import {typeDefsList} from "./graphql/index.js";
 import {dbInitializer} from "./database/initializer.js";
 import mongoose from "mongoose";
 import {config} from "../config/index.js";
+import {container, setUp} from "./awilix/config.js";
+import cors from "cors";
+
+setUp();
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -16,16 +20,21 @@ const server = new ApolloServer({
     typeDefs: typeDefsList,
     resolvers: userResolvers,
     plugins: [ApolloServerPluginDrainHttpServer({httpServer})],
+    introspection: true
 });
 
 await server.start();
 
 app.use('/graphql',
     express.json(),
+    cors(),
     expressMiddleware(server, {
-        context: async ({req}) => {
+        context: async ({req, res}) => {
+            const userService = container.resolve('userService');
             return {
-                token: req.headers.token
+                req,
+                res,
+                userService
             }
         }
     })

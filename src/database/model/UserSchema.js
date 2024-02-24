@@ -1,4 +1,4 @@
-import {Model, Schema} from "mongoose";
+import mongoose, {Model, Schema} from "mongoose";
 
 const userSchema = new Schema({
     firstName: {
@@ -11,27 +11,31 @@ const userSchema = new Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     mobilePhone: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     gender: {
         type: String,
         required: true
     },
     birthDate: {
-        type: String,
+        type: Date,
         required: true
     },
     userTag: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     username: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -39,4 +43,4 @@ const userSchema = new Schema({
     },
 }, { timestamps: true });
 
-export const User = new Model('User', userSchema);
+export const User = mongoose.model('User', userSchema);

@@ -1,3 +1,5 @@
+scalar Date
+
 type User {
     id: ID!,
     firstName: String,
@@ -5,7 +7,7 @@ type User {
     email: String,
     mobilePhone: String,
     gender: String,
-    birthDate: String,
+    birthDate: Date,
     userTag: String,
     username: String,
     password: String
