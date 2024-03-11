@@ -1,8 +1,9 @@
 import {validateInput} from "../utils/validator.js";
 import {registerValidation} from "../utils/registerValidation.js";
 import bcrypt, {compareSync} from "bcrypt";
-import {GraphQLError} from "graphql/error/index.js";
 import {generateToken} from "../utils/JwtUtil.js";
+import {BadRequestError} from "../utils/errorHandler.js";
+import {otpResponse, sendOTPResponse} from "../utils/commonResponse.js";
 
 class UserService {
     constructor({ userRepository, otpService }) {
@@ -29,19 +30,11 @@ class UserService {
         const existUser = await this.userRepository.findUser(username, email);
 
         if(!existUser || !compareSync(password, existUser.password)){
-            throw new GraphQLError("Incorrect data, make sure you have valid credential!", {
-                extensions: {
-                    code: "BAD_REQUEST"
-                }
-            });
+            BadRequestError("Incorrect data, make sure you have valid credential!");
         }
 
         if(!existUser.verified) {
-            throw new GraphQLError("Can not Login, Please verify your email first!", {
-                extensions: {
-                    code: "BAD_REQUEST"
-                }
-            });
+            BadRequestError("Can not Login, Please verify your email first!");
         }
 
         const token = await generateToken(existUser._id, username, existUser.userTag, email);
@@ -57,25 +50,15 @@ class UserService {
         const existUser = await this.userRepository.findByEmail(email);
 
         if(!existUser){
-            throw new GraphQLError("Incorrect data, make sure you have valid credential!", {
-                extensions: {
-                    code: "BAD_REQUEST"
-                }
-            });
+            BadRequestError("Incorrect data, make sure you have valid credential!");
         }
 
         const isSend = await this.otpService.sendOtp(email);
         if(isSend) {
-            return {
-                status: isSend,
-                message: 'otp is already send into your mail!'
-            }
+            return sendOTPResponse(isSend, `OTP Code is Sent, Please check your mail box!`);
         }
 
-        return {
-            status: isSend,
-            message: 'Error occurred when sending otp to your mail!'
-        }
+        return sendOTPResponse(isSend, 'Failed to send OTP Code!');
     }
     async OTPVerification(email, otp) {
         const isDeleted = await this.otpService.verifyOTP(email, otp);
@@ -83,18 +66,11 @@ class UserService {
         if(isDeleted) {
             const updatedUser = await this.userRepository.updateUser(email, { verified: true });
 
-            return {
-                status: true,
-                message: 'Congratulations! Your Account is Active Now!',
-                data: updatedUser
-            }
+            return otpResponse(true, "Congratulations! Your Account is Active Now!", updatedUser);
         }
 
-        return {
-            status: false,
-            message: 'OTP Is Expired, Please Resend And Submit Again!',
-            data: null
-        }
+        return otpResponse(false, "OTP Is Expired, Please Resend And Submit Again!", null);
+
     }
 }
 

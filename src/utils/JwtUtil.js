@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import {config} from "../../config/index.js";
 import {GraphQLError} from "graphql/error/index.js";
+import {ForbiddenError} from "./errorHandler.js";
 
 const generateToken = async (id, username, userTag, email) => {
     return jwt.sign({
@@ -11,11 +12,7 @@ const generateToken = async (id, username, userTag, email) => {
 const authenticateToken = async (token) => {
 
     if (!token || !token.startsWith("Bearer ")) {
-        throw new GraphQLError("You're not allowed to access this resources!", {
-            extensions: {
-                code: "FORBIDDEN"
-            }
-        })
+        return ForbiddenError("You're not allowed to access this resources!");
     }
 
     const tokenValue = token.split("Bearer ")[1];
