@@ -12,7 +12,8 @@ type User {
     username: String!,
     password: String!,
     role: String!,
-    verified: Boolean!
+    verified: Boolean!,
+    imageUri: String
 }
 
 type AuthPayload {

@@ -49,6 +49,10 @@ const userSchema = new Schema({
     verified: {
         type: Boolean,
         default: false
+    },
+    imageUri: {
+        type: String,
+        required: false
     }
 }, { timestamps: true });
 

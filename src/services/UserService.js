@@ -1,4 +1,4 @@
-import {validateInput} from "../utils/validator.js";
+import {generateImg, validateInput} from "../utils/validator.js";
 import {registerValidation} from "../utils/registerValidation.js";
 import bcrypt, {compareSync} from "bcrypt";
 import {generateToken} from "../utils/JwtUtil.js";
@@ -20,8 +20,12 @@ class UserService {
 
         const encryptedPw = bcrypt.hashSync(password, 10);
 
+        const fullName = `${firstName} ${lastName}`;
+
+        const imageUri = generateImg(gender, fullName);
+
         return this.userRepository.saveUser(firstName, lastName, email,
-            mobilePhone, gender, birthDate, userTag, username, encryptedPw);
+            mobilePhone, gender, birthDate, userTag, username, encryptedPw, imageUri);
     }
 
     async login(payload) {

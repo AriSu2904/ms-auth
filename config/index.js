@@ -9,5 +9,6 @@ export const config = {
     SMPT_PORT: process.env.SMPT_PORT,
     SMPT_MAIL: process.env.SMPT_MAIL,
     SMPT_PASS: process.env.SMPT_APP_PASS,
-    SMPT_SERVICE: process.env.SMPT_SERVICE
+    SMPT_SERVICE: process.env.SMPT_SERVICE,
+    IMG_URI: process.env.IMAGE_URI
 }
