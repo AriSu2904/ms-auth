@@ -1,7 +1,8 @@
 import {GraphQLScalarType} from "graphql/type/index.js";
 import {GraphQLError} from "graphql/error/index.js";
 import {Kind} from "graphql/language/index.js";
-import {authenticateToken} from "../../utils/JwtUtils.js";
+import {authenticateToken} from "../../utils/JwtUtil.js";
+import {setCookies} from "../../utils/cookies.js";
 
 const userResolvers = {
     Date: new GraphQLScalarType({
@@ -47,15 +48,31 @@ const userResolvers = {
         }
     },
     Mutation: {
-        loginUser: (_, { loginInput }, context) => {
-            const { userService } = context;
+        loginUser: async (_, { loginInput }, { res, userService }) => {
 
-            return userService.login(loginInput);
+            const loggedUser = await userService.login(loginInput);
+
+            const { token } = loggedUser;
+
+            await setCookies(res, 'token', token);
+
+            return loggedUser;
         },
-        registerUser: (_, { registerInput }, context) => {
-            const { userService } = context;
+        registerUser: async (_, { registerInput }, { res, userService }) => {
 
-            return userService.register(registerInput);
+            const registeredUser = await userService.register(registerInput);
+
+            await setCookies(res, 'email', registeredUser.email);
+
+            return registeredUser;
+        },
+        OneTimePassword: async (_, { email }, { userService }) => {
+            return userService.sendOTP(email);
+        },
+        verifyOTP: async(_, { otpInput }, { req, userService }) => {
+            const { email, otp } = otpInput;
+
+            return userService.OTPVerification(email, otp);
         }
     }
 }

@@ -23,7 +23,12 @@ const authenticateToken = async (token) => {
     return jwt.verify(tokenValue, config.JWT_SECRET);
 }
 
+const decodeToken = async (token) => {
+    return jwt.decode(token);
+}
+
 export {
     generateToken,
-    authenticateToken
+    authenticateToken,
+    decodeToken
 }

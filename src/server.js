@@ -7,11 +7,11 @@ import userResolvers from "./graphql/resolvers/userResolvers.js";
 import {typeDefsList} from "./graphql/index.js";
 import {dbInitializer} from "./database/initializer.js";
 import mongoose from "mongoose";
-import {config} from "../config/index.js";
-import {container, setUp} from "./awilix/config.js";
+import { config } from "../config/index.js";
+import { container } from "./awilix/config.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
-setUp();
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -24,6 +24,8 @@ const server = new ApolloServer({
 });
 
 await server.start();
+
+app.use(cookieParser());
 
 app.use('/graphql',
     express.json(),

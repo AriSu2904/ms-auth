@@ -15,3 +15,8 @@ input loginInput {
     username: String,
     password: String!
 }
+
+input otpInput {
+    email: String!,
+    otp: String!
+}

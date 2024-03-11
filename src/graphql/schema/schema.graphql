@@ -20,3 +20,14 @@ type AuthPayload {
     email: String,
     token: String!
 }
+
+type OTP {
+    status: Boolean,
+    message: String,
+    data: User
+}
+
+type statusOTP {
+    status: Boolean,
+    message: String
+}

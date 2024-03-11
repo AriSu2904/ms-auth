@@ -22,6 +22,16 @@ class UserRepository {
     async findUser(username, email) {
         return this.collection.findOne({$or: [ { username }, { email } ] });
     }
+
+    async findByEmail(email) {
+        return this.collection.findOne({email});
+    }
+
+    async updateUser(email, update) {
+        return this.collection.findOneAndUpdate( { email }, update, {
+            new: true
+        });
+    }
 }
 
 export default UserRepository;
