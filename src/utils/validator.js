@@ -29,5 +29,5 @@ const switcher = (gender) => {
 export const generateImg = (gender, username) => {
     const currentGender = switcher(gender);
 
-    return `${config.IMG_URI}/${currentGender}?username=["${username}"]`;
+    return `${config.IMG_URI}/${currentGender}?username=${username}`;
 }
