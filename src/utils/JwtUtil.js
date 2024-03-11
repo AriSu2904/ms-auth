@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import {config} from "../../config/index.js";
-import {GraphQLError} from "graphql/error/index.js";
 import {ForbiddenError} from "./errorHandler.js";
 
 const generateToken = async (id, username, userTag, email) => {
