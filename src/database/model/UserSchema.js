@@ -41,6 +41,15 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    role: {
+        type: String,
+        enums: ['ADMIN', 'USER', 'SUPERIOR'],
+        default: 'USER'
+    },
+    verified: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true });
 
 export const User = mongoose.model('User', userSchema);

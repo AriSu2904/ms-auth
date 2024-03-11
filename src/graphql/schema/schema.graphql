@@ -2,15 +2,17 @@ scalar Date
 
 type User {
     id: ID!,
-    firstName: String,
-    lastName: String,
-    email: String,
-    mobilePhone: String,
-    gender: String,
-    birthDate: Date,
-    userTag: String,
-    username: String,
-    password: String
+    firstName: String!,
+    lastName: String!,
+    email: String!,
+    mobilePhone: String!,
+    gender: String!,
+    birthDate: Date!,
+    userTag: String!,
+    username: String!,
+    password: String!,
+    role: String!,
+    verified: Boolean!
 }
 
 type AuthPayload {
