@@ -49,6 +49,7 @@ class UserService {
             token
         }
     }
+
     async sendOTP(email) {
 
         const existUser = await this.userRepository.findByEmail(email);
@@ -64,6 +65,7 @@ class UserService {
 
         return sendOTPResponse(isSend, 'Failed to send OTP Code!');
     }
+
     async OTPVerification(email, otp) {
         const isDeleted = await this.otpService.verifyOTP(email, otp);
 

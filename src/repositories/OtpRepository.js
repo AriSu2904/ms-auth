@@ -4,11 +4,12 @@ class OtpRepository {
     }
 
     async saveOtp(email, otp) {
-        const newOtp = new this.collection({
-            email, otp
-        });
+        const newData = {
+            otp,
+            createdAt: new Date()
+        }
 
-        this.collection.create(newOtp);
+        await this.collection.findOneAndUpdate({ email }, newData, { upsert: true });
     }
 
     async findOtp(email, otp){
