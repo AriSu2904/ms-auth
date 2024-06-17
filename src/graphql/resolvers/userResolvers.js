@@ -1,8 +1,10 @@
-import {GraphQLScalarType} from "graphql/type/index.js";
-import {GraphQLError} from "graphql/error/index.js";
-import {Kind} from "graphql/language/index.js";
-import {authenticateToken} from "../../utils/JwtUtil.js";
-import {setCookies} from "../../utils/cookies.js";
+import { GraphQLScalarType } from "graphql/type/index.js";
+import { GraphQLError } from "graphql/error/index.js";
+import { Kind } from "graphql/language/index.js";
+import { authenticateToken, decodeToken } from "../../utils/JwtUtil.js";
+import { setCookies } from "../../utils/cookies.js";
+import { isEqual } from "../../utils/validator.js";
+
 
 const userResolvers = {
     Date: new GraphQLScalarType({
@@ -33,11 +35,11 @@ const userResolvers = {
         id: (parent) => parent.id ?? parent._id,
     },
     Query: {
-        Hello: async (_, args, context) => {
-            const { req } = context;
-            if(req.headers.authorization) {
-                await authenticateToken(req.headers.authorization)
-                return "Hello World!";
+        userInformation: async (_, args, {req, userService}) => {
+            if (req.headers.authorization && isEqual(req.headers.authorization.split('Bearer ')[1], req.headers.cookie.split('token=')[1])) {
+                const { user_dna, user_email } = await decodeToken(req.headers.authorization);
+
+                return userService.getUser(user_dna, user_email);
             }
 
             throw new GraphQLError("You are not authorize!", {
@@ -48,11 +50,11 @@ const userResolvers = {
         }
     },
     Mutation: {
-        loginUser: async (_, { loginInput }, { res, userService }) => {
+        loginUser: async (_, {loginInput}, {res, userService}) => {
 
             const loggedUser = await userService.login(loginInput);
 
-            const { token } = loggedUser;
+            const {token} = loggedUser;
 
             await setCookies(res, 'token', token);
 
@@ -69,8 +71,8 @@ const userResolvers = {
         OneTimePassword: async (_, { email }, { userService }) => {
             return userService.sendOTP(email);
         },
-        verifyOTP: async(_, { otpInput }, { req, userService }) => {
-            const { email, otp } = otpInput;
+        verifyOTP: async (_, {otpInput}, { userService }) => {
+            const {email, otp} = otpInput;
 
             return userService.OTPVerification(email, otp);
         }

@@ -20,7 +20,9 @@ const authenticateToken = async (token) => {
 }
 
 const decodeToken = async (token) => {
-    return jwt.decode(token);
+    const clearToken = token.split("Bearer ")[1];
+
+    return jwt.decode(clearToken);
 }
 
 export {

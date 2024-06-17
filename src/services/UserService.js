@@ -50,6 +50,12 @@ class UserService {
         }
     }
 
+    async getUser(username, email){
+        console.info(`try to get user with username ${username} or email ${email}`);
+
+        return this.userRepository.findUser(username, email);
+    }
+
     async sendOTP(email) {
 
         const existUser = await this.userRepository.findByEmail(email);

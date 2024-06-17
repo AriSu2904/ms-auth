@@ -31,3 +31,7 @@ export const generateImg = (gender, username) => {
 
     return `${config.IMG_URI}/${currentGender}?username=${username}`;
 }
+
+export const isEqual = (val1, val2) => {
+    return val1 === val2;
+}
