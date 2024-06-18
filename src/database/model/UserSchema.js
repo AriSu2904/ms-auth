@@ -1,41 +1,15 @@
 import mongoose, { Schema } from "mongoose";
 
-const userSchema = new Schema({
-    firstName: {
-        type: String,
-        required: true
-    },
-    lastName: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    mobilePhone: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    gender: {
-        type: String,
-        required: true
-    },
-    birthDate: {
-        type: String,
-        required: true
-    },
-    userTag: {
-        type: String,
-        required: true,
-        unique: true
-    },
+const UserSchema = new Schema({
     username: {
         type: String,
         required: true,
         unique: true
+    },
+    email: {
+        type: String,
+        unique: true,
+        required: true
     },
     password: {
         type: String,
@@ -50,10 +24,10 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
-    imageUri: {
-        type: String,
-        required: false
+    profile: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Profile'
     }
 }, { timestamps: true });
 
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model('User', UserSchema);

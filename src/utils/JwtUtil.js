@@ -2,9 +2,9 @@ import jwt from "jsonwebtoken";
 import {config} from "../../config/index.js";
 import {ForbiddenError} from "./errorHandler.js";
 
-const generateToken = async (id, username, userTag, email) => {
+const generateToken = async (id, username, email) => {
     return jwt.sign({
-        user_id: id, username, user_dna: userTag, user_email: email,
+        user_id: id, username, email,
     }, config.JWT_SECRET, {expiresIn: config.JWT_EXPIRY});
 }
 

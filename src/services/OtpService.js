@@ -1,10 +1,11 @@
 import randomizing from "randomstring";
 import { config } from "../../config/index.js";
 import nodemailer from "nodemailer";
+import {NotFoundError} from "../utils/errorHandler.js";
 
 class OtpService {
     constructor({ otpRepository }) {
-        this.repository = otpRepository;
+        this.otpRepository = otpRepository;
     }
 
     async _generateOTP() {
@@ -35,28 +36,33 @@ class OtpService {
 
         await transporter.sendMail(mailOptions);
     }
+
     async sendOtp(email){
         try {
             const newOTP = await this._generateOTP();
-
-            await this.repository.saveOtp(email, newOTP);
 
             await this._mailSender({
                 to: email,
                 subject: 'Your OTP',
                 message: `<p>Your otp is: <strong>${newOTP}</strong></p>`
             });
-            console.log(`Success send otp to ${email}`);
-            return true;
-        }catch (err){
-            console.log(`Error occurred when sending otp ${err}`);
 
-            throw err;
+            await this.otpRepository.saveOtp(email, newOTP);
+
+            return newOTP
+        }catch (err){
+            return err.message;
         }
     }
 
-    async verifyOTP(email, otp) {
-        return this.repository.deleteOtp(email, otp);
+    async verifyOtp(email, otp) {
+        const existingOtp = await this.otpRepository.findOtp(email, otp);
+
+        if(existingOtp) {
+            return this.otpRepository.deleteOtp(email, otp);
+        }
+
+        throw NotFoundError('Expired OTP Code, Please request new OTP!');
     }
 }
 

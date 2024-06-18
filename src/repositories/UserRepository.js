@@ -1,27 +1,9 @@
 class UserRepository {
-    constructor({ userSchema }) {
-        this.collection = userSchema;
+    constructor({userSchema}) {
+        this.collection = userSchema
     }
 
-    async saveUser(payload) {
-       return this.collection.create(payload);
-    }
-
-    async findUser(username, email) {
-        return this.collection.findOne({$or: [ { username }, { email } ] });
-    }
-
-    async findByEmail(email) {
-        return this.collection.findOne({ email });
-    }
-
-    async updateUser(email, update) {
-        return this.collection.findOneAndUpdate( { email }, update, {
-            new: true
-        });
-    }
-
-    async updateProfile(email, payload) {
+    async upsertUser(email, payload) {
         const filter = {
             email
         };
@@ -29,10 +11,20 @@ class UserRepository {
             ...payload
         }
         const options = {
-            new: true
+            new: true,
+            upsert: true
         }
 
-        return this.collection.findOneAndUpdate(filter, replacement, options);
+        return await this.collection.findOneAndUpdate(filter, replacement, options);
+    }
+
+    async findUser(filterField) {
+        return this.collection.findOne({
+            $or: [
+                {email: filterField},
+                {username: filterField}
+            ]
+        });
     }
 }
 

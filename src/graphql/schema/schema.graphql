@@ -1,24 +1,27 @@
 scalar Date
 
-type User {
-    id: ID!
+type Profile {
     firstName: String!
     lastName: String!
     email: String!
     mobilePhone: String!
     gender: String!
     birthDate: String!
-    userTag: String!
-    username: String!
+    profilePicture: String
+}
+
+type User {
+    id: ID!
+    username: String
     password: String!
-    role: String!
-    verified: Boolean!
-    imageUri: String
+    role: String
+    verified: Boolean
+    email: String
+    profile: Profile!
 }
 
 type AuthPayload {
     username: String
-    email: String
     token: String
     status: String
 }

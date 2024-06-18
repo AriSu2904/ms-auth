@@ -1,30 +1,35 @@
-input RegisterInput {
+input ProfileInput {
     firstName: String!
     lastName: String!
-    email: String!
     mobilePhone: String!
     gender: String!
     birthDate: String!
-    userTag: String!
+    profilePicture: String
+}
+
+input RegisterInput {
     username: String!
     password: String!
+    email: String!
+    profile: ProfileInput
 }
 
 input UpdateProfileInput {
     firstName: String
     lastName: String
     mobilePhone: String
+    email: String
     birthDate: String
-    userTag: String
+    profilePicture: String
+    bio: String
 }
 
-input loginInput {
-    email: String
-    username: String
+input LoginInput {
+    username: String!
     password: String!
 }
 
-input otpInput {
+input OtpInput {
     email: String!
     otp: String!
 }

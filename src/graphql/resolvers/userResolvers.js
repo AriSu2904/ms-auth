@@ -3,9 +3,6 @@ import { setCookies } from "../../utils/cookies.js";
 import { ForbiddenError } from "../../utils/errorHandler.js";
 import { authorizationHeaderCheck } from "../../utils/validator.js";
 import { config } from "../../../config/index.js";
-import moment from "moment";
-import {extractBirthDate} from "../../utils/dateUtil.js";
-
 
 const userResolvers = {
     User: {
@@ -14,9 +11,9 @@ const userResolvers = {
     Query: {
         userInformation: async (_, args, { req, userService }) => {
             if (authorizationHeaderCheck(req)) {
-                const { user_dna, user_email } = await decodeToken(req.headers.authorization);
+                const { username } = await decodeToken(req.headers.authorization);
 
-                return userService.getUser(user_dna, user_email);
+                return userService.getUser(username);
             }
 
             throw ForbiddenError(config.ERROR_MESSAGE.FORBIDDEN);
@@ -41,12 +38,12 @@ const userResolvers = {
             return registeredUser;
         },
         oneTimePassword: async (_, { email }, { userService }) => {
-            return userService.sendOTP(email);
+            return userService.OtpRequest(email);
         },
         verifyOTP: async (_, { otpInput }, { userService }) => {
             const {email, otp} = otpInput;
 
-            return userService.OTPVerification(email, otp);
+            return userService.OtpClaims(email, otp);
         },
         updateProfile: async (_, { updateInput }, { req, userService }) => {
             if(authorizationHeaderCheck(req)) {

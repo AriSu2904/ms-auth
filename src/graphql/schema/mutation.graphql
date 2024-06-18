@@ -1,7 +1,7 @@
 type Mutation {
-    loginUser(loginInput: loginInput): AuthPayload
-    registerUser(registerInput: RegisterInput): User
-    oneTimePassword(email: String): statusOTP
-    verifyOTP(otpInput: otpInput): OTP
-    updateProfile(updateInput: UpdateProfileInput): User
+    loginUser(loginInput: LoginInput!): AuthPayload!
+    registerUser(registerInput: RegisterInput!): User!
+    oneTimePassword(email: String!): statusOTP!
+    verifyOTP(otpInput: OtpInput!): OTP!
+    updateProfile(updateInput: UpdateProfileInput!): User!
 }

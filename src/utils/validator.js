@@ -1,22 +1,4 @@
-import { GraphQLError } from "graphql/error/index.js";
 import { config } from "../../config/index.js";
-
-export const validateInput = (schema, request) => {
-    const result = schema.validate(request, {
-        abortEarly: false,
-        allowUnknown: false
-    });
-
-    if(result.error) {
-        throw new GraphQLError(result.error.message, {
-            extensions: {
-                code: config.ERROR_CODE["400"]
-            }
-        });
-    }else {
-        return result.value;
-    }
-}
 
 const switcher = (gender) => {
     if(gender === 'Laki-laki'){

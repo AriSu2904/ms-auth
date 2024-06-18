@@ -9,7 +9,7 @@ class OtpRepository {
             createdAt: new Date()
         }
 
-        await this.collection.findOneAndUpdate({ email }, newData, { upsert: true });
+        return this.collection.findOneAndUpdate({ email }, newData, { upsert: true });
     }
 
     async findOtp(email, otp){
@@ -17,7 +17,7 @@ class OtpRepository {
     }
 
     async deleteOtp(email, otp) {
-        return this.collection.findOneAndDelete({email, otp});
+        return this.collection.deleteOne({email, otp});
     }
 }
 
