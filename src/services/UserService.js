@@ -14,7 +14,7 @@ class UserService {
         this.profileService = profileService;
     }
 
-    async register(payload) {
+    async register(payload){
         const validInput = validateInput(registrationSchema, payload);
 
         const existData = await this.userRepository.findUser(payload.email);
@@ -40,7 +40,7 @@ class UserService {
         return userProfileMapped(storedUser, storedProfile);
     }
 
-    async login(payload) {
+    async login(payload){
         const {username, password} = payload;
 
         const existUser = await this.userRepository.findUser(username);
@@ -58,7 +58,7 @@ class UserService {
         return loginResponse(username, token, config.USER_STATUS.VERIFIED);
     }
 
-    async OtpRequest(email) {
+    async OtpRequest(email){
         const result = await this.otpService.sendOtp(email);
 
         console.log(result);
@@ -69,7 +69,7 @@ class UserService {
         return otpResponse(false, result, null);
     }
 
-    async OtpClaims(email, otp) {
+    async OtpClaims(email, otp){
         try {
             await this.otpService.verifyOtp(email, otp);
             const verifiedUser = await this.userRepository.upsertUser(email, {verified: true});
@@ -93,6 +93,22 @@ class UserService {
         }
 
         throw NotFoundError(config.ERROR_MESSAGE.NOT_FOUND)
+    }
+
+    async updateUserProfile(payloadEmail, payload) {
+        let existUser = await this.userRepository.findUser(payloadEmail);
+
+        if(existUser) {
+            const updatedProfile = await this.profileService.upsertProfile(payloadEmail, payload);
+
+            if(existUser.email !== updatedProfile.email) {
+                existUser = await this.userRepository.upsertUser(payloadEmail, { email: updatedProfile.email })
+            }
+
+            return userProfileMapped(existUser, updatedProfile);
+        }
+
+        throw NotFoundError(config.ERROR_MESSAGE.NOT_FOUND);
     }
 
 }

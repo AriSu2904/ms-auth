@@ -1,7 +1,7 @@
 export const userProfileMapped = (user, profile) => {
     const { username, role, verified, email } = user
     const { firstName, lastName, mobilePhone,
-        gender, birthDate, profilePicture } = profile
+        gender, birthDate, profilePicture, bio } = profile
     return {
         username,
         role,
@@ -14,7 +14,8 @@ export const userProfileMapped = (user, profile) => {
             mobilePhone,
             gender,
             birthDate,
-            profilePicture
+            profilePicture,
+            bio
         }
     }
 }

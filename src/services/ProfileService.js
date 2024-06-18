@@ -7,7 +7,9 @@ class ProfileService {
         this.profileRepository = profileRepository;
     }
 
-    async upsertProfile(email, { profile }) {
+    async upsertProfile(emailPayload, payload) {
+        const registrationPayload = payload.profile;
+        const profile = registrationPayload || payload;
         const validInput = validateInput(profileSchema, profile);
 
         const {
@@ -15,10 +17,12 @@ class ProfileService {
             lastName,
             mobilePhone,
             gender,
-            birthDate
+            birthDate,
+            bio,
+            email
         } = validInput
 
-        const fullName = `${firstName}${lastName}`;
+        const fullName = firstName+lastName;
         const profilePicture = generateImg(gender, fullName);
 
         const profilePayload = {
@@ -27,11 +31,12 @@ class ProfileService {
             email,
             mobilePhone,
             gender,
-            birthDate: extractBirthDate(birthDate),
-            profilePicture
+            ...(birthDate && {birthDate: extractBirthDate(birthDate)}),
+            ...(fullName && { profilePicture }),
+            bio
         }
 
-        return this.profileRepository.upsertProfile(email, profilePayload);
+        return this.profileRepository.upsertProfile(emailPayload, profilePayload);
     }
 
     async getProfile(email) {

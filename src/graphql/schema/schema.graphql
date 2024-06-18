@@ -8,6 +8,7 @@ type Profile {
     gender: String!
     birthDate: String!
     profilePicture: String
+    bio: String
 }
 
 type User {

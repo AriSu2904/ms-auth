@@ -47,9 +47,9 @@ const userResolvers = {
         },
         updateProfile: async (_, { updateInput }, { req, userService }) => {
             if(authorizationHeaderCheck(req)) {
-                const { user_email } = await decodeToken(req.headers.authorization);
+                const { email } = await decodeToken(req.headers.authorization);
 
-                return userService.updateUserInformation(user_email, updateInput);
+                return userService.updateUserProfile(email, updateInput);
             }
 
             throw ForbiddenError(config.ERROR_MESSAGE.FORBIDDEN);
