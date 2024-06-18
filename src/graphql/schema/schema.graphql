@@ -1,34 +1,35 @@
 scalar Date
 
 type User {
-    id: ID!,
-    firstName: String!,
-    lastName: String!,
-    email: String!,
-    mobilePhone: String!,
-    gender: String!,
-    birthDate: Date!,
-    userTag: String!,
-    username: String!,
-    password: String!,
-    role: String!,
-    verified: Boolean!,
+    id: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    mobilePhone: String!
+    gender: String!
+    birthDate: String!
+    userTag: String!
+    username: String!
+    password: String!
+    role: String!
+    verified: Boolean!
     imageUri: String
 }
 
 type AuthPayload {
-    username: String,
-    email: String,
-    token: String!
+    username: String
+    email: String
+    token: String
+    status: String
 }
 
 type OTP {
-    status: Boolean,
-    message: String,
+    status: Boolean
+    message: String
     data: User
 }
 
 type statusOTP {
-    status: Boolean,
+    status: Boolean
     message: String
 }

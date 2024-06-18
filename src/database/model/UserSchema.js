@@ -1,4 +1,4 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const userSchema = new Schema({
     firstName: {
@@ -24,7 +24,7 @@ const userSchema = new Schema({
         required: true
     },
     birthDate: {
-        type: Date,
+        type: String,
         required: true
     },
     userTag: {

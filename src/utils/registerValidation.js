@@ -6,7 +6,7 @@ export const registerValidation = Joi.object({
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'test'] } }).required(),
     mobilePhone: Joi.string().alphanum(),
     gender: Joi.string().pattern(/^(Laki-laki|Perempuan)$/),
-    birthDate: Joi.date().required(),
+    birthDate: Joi.string().isoDate(),
     userTag: Joi.string().required().alphanum(),
     username: Joi.string().required().alphanum(),
     password: Joi.string().pattern(new RegExp("^.{8,}$"))

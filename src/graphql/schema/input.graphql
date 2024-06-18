@@ -4,7 +4,7 @@ input RegisterInput {
     email: String!
     mobilePhone: String!
     gender: String!
-    birthDate: Date!
+    birthDate: String!
     userTag: String!
     username: String!
     password: String!
@@ -14,7 +14,7 @@ input UpdateProfileInput {
     firstName: String
     lastName: String
     mobilePhone: String
-    birthDate: Date
+    birthDate: String
     userTag: String
 }
 

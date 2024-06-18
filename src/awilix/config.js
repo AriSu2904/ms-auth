@@ -1,8 +1,8 @@
 import awilix, {asClass, asValue} from "awilix";
-import {User} from "../database/model/UserSchema.js";
+import { User } from "../database/model/UserSchema.js";
 import UserService from "../services/UserService.js";
 import UserRepository from "../repositories/UserRepository.js";
-import {OTP} from "../database/model/OtpSchema.js";
+import { OTP } from "../database/model/OtpSchema.js";
 import OtpRepository from "../repositories/OtpRepository.js";
 import OtpService from "../services/OtpService.js";
 

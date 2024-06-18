@@ -3,21 +3,8 @@ class UserRepository {
         this.collection = userSchema;
     }
 
-    async saveUser(firstName, lastName, email, mobilePhone, gender, birthDate, userTag, username, password, imageUri) {
-       const user = new this.collection({
-           firstName,
-           lastName,
-           email,
-           mobilePhone,
-           gender,
-           birthDate,
-           userTag,
-           username,
-           password,
-           imageUri
-       });
-
-       return this.collection.create(user);
+    async saveUser(payload) {
+       return this.collection.create(payload);
     }
 
     async findUser(username, email) {
@@ -32,6 +19,20 @@ class UserRepository {
         return this.collection.findOneAndUpdate( { email }, update, {
             new: true
         });
+    }
+
+    async updateProfile(email, payload) {
+        const filter = {
+            email
+        };
+        const replacement = {
+            ...payload
+        }
+        const options = {
+            new: true
+        }
+
+        return this.collection.findOneAndUpdate(filter, replacement, options);
     }
 }
 

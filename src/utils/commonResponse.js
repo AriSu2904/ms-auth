@@ -12,3 +12,7 @@ export const sendOTPResponse = (status, message) => {
         message
     }
 }
+
+export const loginResponse = (email, username, token, status) => ({
+    email, username, token, status
+})

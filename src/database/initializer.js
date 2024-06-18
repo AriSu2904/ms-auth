@@ -1,4 +1,4 @@
-import {config} from "../../config/index.js";
+import { config } from "../../config/index.js";
 
 export const dbInitializer = async (mongoose) => {
     try {

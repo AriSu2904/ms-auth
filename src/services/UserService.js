@@ -1,10 +1,12 @@
-import {generateImg, validateInput} from "../utils/validator.js";
-import {registerValidation} from "../utils/registerValidation.js";
-import bcrypt, {compareSync} from "bcrypt";
-import {generateToken} from "../utils/JwtUtil.js";
-import {BadRequestError} from "../utils/errorHandler.js";
-import {otpResponse, sendOTPResponse} from "../utils/commonResponse.js";
-import {profileUpdateValidation} from "../utils/profileUpdateValidation.js";
+import { generateImg, validateInput } from "../utils/validator.js";
+import { registerValidation } from "../utils/registerValidation.js";
+import bcrypt, { compareSync } from "bcrypt";
+import { generateToken } from "../utils/JwtUtil.js";
+import {BadRequestError, NotFoundError} from "../utils/errorHandler.js";
+import {loginResponse, otpResponse, sendOTPResponse} from "../utils/commonResponse.js";
+import { profileUpdateValidation } from "../utils/profileUpdateValidation.js";
+import {config} from "../../config/index.js";
+import {extractBirthDate} from "../utils/dateUtil.js";
 
 class UserService {
     constructor({ userRepository, otpService }) {
@@ -15,18 +17,26 @@ class UserService {
     async register(payload) {
         const validInput = validateInput(registerValidation, payload);
 
-        const { firstName, lastName, email,
-            mobilePhone, gender, birthDate, userTag,
-            username, password } = validInput;
+        const existData = await this.userRepository.findByEmail(payload.email);
+        if(existData) {
+           throw BadRequestError(config.ERROR_MESSAGE.DUPLICATE_EMAIL);
+        }
+
+        const { firstName, lastName, gender, password, birthDate } = validInput;
 
         const encryptedPw = bcrypt.hashSync(password, 10);
-
         const fullName = `${firstName} ${lastName}`;
-
         const imageUri = generateImg(gender, fullName);
 
-        return this.userRepository.saveUser(firstName, lastName, email,
-            mobilePhone, gender, birthDate, userTag, username, encryptedPw, imageUri);
+        const data = {
+            ...payload,
+            birthDate: extractBirthDate(birthDate),
+            password: encryptedPw,
+            fullName,
+            imageUri
+        }
+
+        return this.userRepository.saveUser(data);
     }
 
     async login(payload) {
@@ -35,20 +45,16 @@ class UserService {
         const existUser = await this.userRepository.findUser(username, email);
 
         if(!existUser || !compareSync(password, existUser.password)){
-            BadRequestError("Incorrect data, make sure you have valid credential!");
+            BadRequestError(config.ERROR_MESSAGE.BAD_REQUEST);
         }
 
         if(!existUser.verified) {
-            BadRequestError("Can not Login, Please verify your email first!");
+            return loginResponse(email, username, null, config.USER_STATUS.UNREGISTERED);
         }
 
         const token = await generateToken(existUser._id, username, existUser.userTag, email);
 
-        return {
-            email,
-            username,
-            token
-        }
+        return loginResponse(email, username, token, config.USER_STATUS.VERIFIED);
     }
 
     async getUser(username, email){
@@ -62,7 +68,7 @@ class UserService {
         const existUser = await this.userRepository.findByEmail(email);
 
         if(!existUser){
-            BadRequestError("Incorrect data, make sure you have valid credential!");
+            BadRequestError(config.ERROR_MESSAGE.BAD_REQUEST);
         }
 
         const isSend = await this.otpService.sendOtp(email);
@@ -87,12 +93,19 @@ class UserService {
     }
 
     async updateUserInformation(email, payload) {
-        const existData = await this.userRepository.findByEmail(email);
         const validInput = validateInput(profileUpdateValidation, payload);
+        const existData = await this.userRepository.findByEmail(email);
 
         if(existData) {
-            return this.userRepository.updateProfile(payload);
+            const data = {
+                ...validInput,
+                ...(validInput.birthDate && { birthDate: extractBirthDate(validInput.birthDate) })
+            }
+
+            return this.userRepository.updateProfile(email, data);
         }
+
+        throw NotFoundError(config.ERROR_MESSAGE.NOT_FOUND)
     }
 }
 

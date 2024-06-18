@@ -1,5 +1,5 @@
 import randomizing from "randomstring";
-import {config} from "../../config/index.js";
+import { config } from "../../config/index.js";
 import nodemailer from "nodemailer";
 
 class OtpService {

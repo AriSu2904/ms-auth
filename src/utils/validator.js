@@ -1,5 +1,5 @@
-import {GraphQLError} from "graphql/error/index.js";
-import {config} from "../../config/index.js";
+import { GraphQLError } from "graphql/error/index.js";
+import { config } from "../../config/index.js";
 
 export const validateInput = (schema, request) => {
     const result = schema.validate(request, {
@@ -10,7 +10,7 @@ export const validateInput = (schema, request) => {
     if(result.error) {
         throw new GraphQLError(result.error.message, {
             extensions: {
-                code: "BAD_REQUEST"
+                code: config.ERROR_CODE["400"]
             }
         });
     }else {
