@@ -4,6 +4,7 @@ import bcrypt, {compareSync} from "bcrypt";
 import {generateToken} from "../utils/JwtUtil.js";
 import {BadRequestError} from "../utils/errorHandler.js";
 import {otpResponse, sendOTPResponse} from "../utils/commonResponse.js";
+import {profileUpdateValidation} from "../utils/profileUpdateValidation.js";
 
 class UserService {
     constructor({ userRepository, otpService }) {
@@ -83,6 +84,15 @@ class UserService {
 
         return otpResponse(false, "OTP Is Expired, Please Resend And Submit Again!", null);
 
+    }
+
+    async updateUserInformation(email, payload) {
+        const existData = await this.userRepository.findByEmail(email);
+        const validInput = validateInput(profileUpdateValidation, payload);
+
+        if(existData) {
+            return this.userRepository.updateProfile(payload);
+        }
     }
 }
 

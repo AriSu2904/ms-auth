@@ -1,9 +1,10 @@
 import { GraphQLScalarType } from "graphql/type/index.js";
-import { GraphQLError } from "graphql/error/index.js";
 import { Kind } from "graphql/language/index.js";
-import { authenticateToken, decodeToken } from "../../utils/JwtUtil.js";
+import { decodeToken } from "../../utils/JwtUtil.js";
 import { setCookies } from "../../utils/cookies.js";
-import { isEqual } from "../../utils/validator.js";
+import {ForbiddenError} from "../../utils/errorHandler.js";
+import {authorizationHeaderCheck} from "../../utils/validator.js";
+import {config} from "../../../config/index.js";
 
 
 const userResolvers = {
@@ -36,21 +37,17 @@ const userResolvers = {
     },
     Query: {
         userInformation: async (_, args, {req, userService}) => {
-            if (req.headers.authorization && isEqual(req.headers.authorization.split('Bearer ')[1], req.headers.cookie.split('token=')[1])) {
+            if (authorizationHeaderCheck(req)) {
                 const { user_dna, user_email } = await decodeToken(req.headers.authorization);
 
                 return userService.getUser(user_dna, user_email);
             }
 
-            throw new GraphQLError("You are not authorize!", {
-                extensions: {
-                    code: "FORBIDDEN"
-                }
-            })
+            throw ForbiddenError(config.ERROR_MESSAGE.FORBIDDEN);
         }
     },
     Mutation: {
-        loginUser: async (_, {loginInput}, {res, userService}) => {
+        loginUser: async (_, { loginInput }, {res, userService}) => {
 
             const loggedUser = await userService.login(loginInput);
 
@@ -68,13 +65,22 @@ const userResolvers = {
 
             return registeredUser;
         },
-        OneTimePassword: async (_, { email }, { userService }) => {
+        oneTimePassword: async (_, { email }, { userService }) => {
             return userService.sendOTP(email);
         },
-        verifyOTP: async (_, {otpInput}, { userService }) => {
+        verifyOTP: async (_, { otpInput }, { userService }) => {
             const {email, otp} = otpInput;
 
             return userService.OTPVerification(email, otp);
+        },
+        updateProfile: async (_, { updateInput }, { req, userService }) => {
+            if(authorizationHeaderCheck(req)) {
+                const { user_email } = await decodeToken(req.headers.authorization);
+
+                const updatedProfile = await userService.updateUserInformation(user_email, updateInput);
+            }
+
+            throw ForbiddenError(config.ERROR_MESSAGE.FORBIDDEN);
         }
     }
 }

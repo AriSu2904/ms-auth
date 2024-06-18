@@ -10,5 +10,14 @@ export const config = {
     SMPT_MAIL: process.env.SMPT_MAIL,
     SMPT_PASS: process.env.SMPT_APP_PASS,
     SMPT_SERVICE: process.env.SMPT_SERVICE,
-    IMG_URI: process.env.IMAGE_URI
+    IMG_URI: process.env.IMAGE_URI,
+    ERROR_MESSAGE: {
+        UNAUTHORIZED: 'You are not authorized!',
+        FORBIDDEN: 'You are not allowed to access this resources!'
+    },
+    ERROR_CODE: {
+        400: '400 | BAD_REQUEST',
+        401: '401 | UNAUTHORIZED',
+        403: '403 | FORBIDDEN'
+    }
 }

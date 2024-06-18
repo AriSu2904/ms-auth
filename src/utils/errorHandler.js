@@ -1,9 +1,10 @@
 import {GraphQLError} from "graphql/error/index.js";
+import { config } from "../../config/index.js";
 
 export const BadRequestError = (message) => {
     throw new GraphQLError(message, {
         extensions: {
-            code: "BAD_REQUEST"
+            code: config.ERROR_CODE["400"]
         }
     });
 }
@@ -11,7 +12,7 @@ export const BadRequestError = (message) => {
 export const ForbiddenError = (message) => {
     throw new GraphQLError(message, {
         extensions: {
-            code: "FORBIDDEN"
+            code: config.ERROR_CODE["403"]
         }
     });
 }

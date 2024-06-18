@@ -25,7 +25,7 @@ class UserRepository {
     }
 
     async findByEmail(email) {
-        return this.collection.findOne({email});
+        return this.collection.findOne({ email });
     }
 
     async updateUser(email, update) {
