@@ -4,16 +4,16 @@ type Profile {
     firstName: String!
     lastName: String!
     email: String!
-    mobilePhone: String!
-    gender: String!
-    birthDate: String!
+    mobilePhone: String
+    gender: String
+    birthDate: String
     profilePicture: String
     bio: String
 }
 
 type User {
     id: ID!
-    username: String
+    username: String!
     password: String!
     role: String
     verified: Boolean
