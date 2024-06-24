@@ -32,8 +32,8 @@ const profileSchema = Joi.object({
 
 const registrationSchema = Joi.object({
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'test'] } }).required(),
-    username: Joi.string().required().alphanum(),
-    password: Joi.string().pattern(new RegExp("^.{8,}$")),
+    username: Joi.string().required().alphanum().required(),
+    password: Joi.string().pattern(new RegExp("^.{8,}$")).required(),
     profile: profileSchema
 });
 
